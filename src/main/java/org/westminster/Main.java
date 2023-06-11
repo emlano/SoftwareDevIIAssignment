@@ -130,7 +130,6 @@ public class Main {
                     System.out.println();
             }
         }
-
     }
 
     public static void printMenu() {
@@ -153,41 +152,33 @@ public class Main {
         System.out.println("    999 or EXT -- Exit the program");
     }
 
-    public static void printQueue(String[][] queue) {
+    public static void printQueue(String[][] arr) {
         // Create queue header
         System.out.println("    *****************");
         System.out.println("    *    Cashiers   *");
         System.out.println("    *****************");
 
-        int cashier = 0;
-        int index = 0;
-        System.out.print("        ");
-        while (true) {
-            if (cashier == 3) {
-                System.out.println();
-                System.out.print("        ");
-                index++;
-                cashier = 0;
-            }
+        System.out.print("       ");
 
-            if (index == 5) {
-                break;
-            }
-
-            if (index < queue[cashier].length) {
-                if (queue[cashier][index].equals("_")) {
-                    System.out.print("X");
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (i < arr[j].length) {
+                    if (arr[j][i].equals("_")) {
+                        System.out.print("X");
+                    
+                    } else {
+                        System.out.print("O");
+                    }
                 
                 } else {
-                    System.out.print("O");
+                    System.out.print(" ");
                 }
-            
-            } else {
-                System.out.print(" ");
+
+                System.out.print("    ");
             }
-            
-            System.out.print("   ");
-            cashier++;
+
+            System.out.println();
+            System.out.print("       ");
         }
         
         System.out.println();
@@ -199,62 +190,27 @@ public class Main {
         System.out.println("  *   Empty Cashiers  *");
         System.out.println("  *********************");
 
-        boolean firstQueueEmpty = hasEmptySpots(arr[0]);
-        boolean secondQueueEmpty = hasEmptySpots(arr[1]);
-        boolean thirdQueueEmpty = hasEmptySpots(arr[2]);
-
-        int cashier = 0;
-        int index = 0;
-        System.out.print("        ");
-        while (true) {
-            if (cashier == 3) {
-                System.out.println();
-                System.out.print("        ");
-                index++;
-                cashier = 0;
-            }
-
-            if (index == 5) {
-                break;
-            }
-
-            if (cashier == 0 && firstQueueEmpty && index < 2) {
-                if (arr[0][index] == "_") {
-                    System.out.print("X");
+        System.out.print("       ");
+        
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (i < arr[j].length && hasEmptySpots(arr[j])) {
+                    if (arr[j][i].equals("_")) {
+                        System.out.print("X");
+                    
+                    } else {
+                        System.out.print("O");
+                    }
                 
                 } else {
-                    System.out.print("O");
+                    System.out.print(" ");
                 }
-            
-            } else {
-                System.out.print(" ");
+
+                System.out.print("    ");
             }
 
-            if (cashier == 1 && secondQueueEmpty && index < 3) {
-                if (arr[1][index] == "_") {
-                    System.out.print("X");
-                
-                } else {
-                    System.out.print("O");
-                }
-            
-            } else {
-                System.out.print(" ");
-            }
-
-            if (cashier == 2 && thirdQueueEmpty && index < 5) {
-                if (arr[2][index] == "_") {
-                    System.out.print("X");
-                
-                } else {
-                    System.out.print("O");
-                }
-            
-            } else {
-                System.out.print(" ");
-            }
-            
-            cashier++;
+            System.out.println();
+            System.out.print("       ");
         }
         
         System.out.println();
@@ -268,7 +224,7 @@ public class Main {
             
             } else {
                 for (int i = 0; i < arr[queueNo].length; i++) {
-                    if (arr[queueNo][i] == "_") {
+                    if (arr[queueNo][i].equals("_")) {
                         arr[queueNo][i] = customerName;
                         System.out.println("( $ ) Successfully added to queue!");
                         return;
@@ -284,7 +240,7 @@ public class Main {
 
     public static boolean hasEmptySpots(String[] arr) {
         for (String i : arr) {
-            if (i == "_") {
+            if (i.equals("_")) {
                 return true;
             }
         }
@@ -294,8 +250,8 @@ public class Main {
 
     public static void removeCustomer(String[][] arr, int queueNo, int row) {
         if (queueNo == 0 || queueNo == 1 || queueNo == 2) {
-            if (row < arr[queueNo].length) {
-                if (arr[queueNo][row] != "_") {
+            if (row < arr[queueNo].length && row >= 0) {
+                if (arr[queueNo][row].equals("_")) {
                     arr[queueNo][row] = "_";
                 
                 } else {
@@ -321,7 +277,7 @@ public class Main {
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr[i].length; j++) {
                 if (j != arr[i].length - 1) {
-                    if (arr[i][j + 1] != "_" && arr[i][j] == "_") {
+                    if (!arr[i][j + 1].equals("_") && arr[i][j].equals("_")) {
                         arr[i][j] = arr[i][j + 1];
                         arr[i][j + 1] = "_";
                     }
@@ -332,13 +288,20 @@ public class Main {
 
     public static int removeServedCustomer(String[][] arr, int burgerStock, int queueNo) {
         if (queueNo == 0 || queueNo == 1 || queueNo == 2) {
-            if (arr[queueNo][0] != "_") {
-                arr[queueNo][0] = "_";
-                moveForward(arr);
-                System.out.println("( $ ) Successfully served customer!");
-                return burgerStock -= 5;
+            if (burgerStock >= 5) {
+                if (!arr[queueNo][0].equals("_")) {
+                    arr[queueNo][0] = "_";
+                    moveForward(arr);
+                    System.out.println("( $ ) Successfully served customer!");
+                    return burgerStock -= 5;
+                
+                } else {
+                    System.out.println("( ! ) Error! No customers in queue!");
+                    return burgerStock;
+                }
+            
             } else {
-                System.out.println("( ! ) Error! No customers in queue!");
+                System.out.println("( ! ) Error! Burger stock too low for transaction!");
                 return burgerStock;
             }
 
@@ -349,32 +312,19 @@ public class Main {
     }
 
     public static void sortCustomers(String[][] arr) {
-        int numberOfCustomers = 0;
-
-        for (String[] i : arr) {
-            for (String j : i) {
-                if (j != "_") {
-                    numberOfCustomers++;
-                
-                }
-            }
-        }
-
-        String[] customerArr = new String[numberOfCustomers];
-
+        String[] customerArr = new String[10];
         int arrIndex = 0;
+ 
+        for (String[] j : arr) {
+            for (String k : j) {
+                customerArr[arrIndex] = k;
+                arrIndex++;
 
-        for (String[] i : arr) {
-            for (String j : i) {
-                if (j != "_") {
-                    customerArr[arrIndex] = j;
-                    arrIndex++;
-                }
             }
         }
 
-        for (int i = 0; i < numberOfCustomers; i++) {
-            for (int j = 0; j < numberOfCustomers; j++) {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
                 if (customerArr[i].compareTo(customerArr[j]) < 0) {
                     String temp = customerArr[i];
                     customerArr[i] = customerArr[j];
