@@ -39,28 +39,45 @@ public class Main {
                     break;
 
                 case "102": case "ACQ":
-                    System.out.print("( ? ) Enter customer name: ");
-                    String customerName = scanner.nextLine().strip();
-                    System.out.print("( ? ) Enter queue (1, 2, 3) : ");
-                    queueNo = Integer.valueOf(scanner.nextLine()) - 1;
+                    try {
+                        System.out.print("( ? ) Enter customer name: ");
+                        String customerName = scanner.nextLine().strip();
+                        System.out.print("( ? ) Enter queue (1, 2, 3) : ");
+                        queueNo = Integer.valueOf(scanner.nextLine()) - 1;
+                        addToQueue(queue, customerName, queueNo);
+                    
+                    } catch (NumberFormatException e) {
+                        System.out.println("( ! ) Error! Input not an Integer! Number input required!");
+                    }
 
-                    addToQueue(queue, customerName, queueNo);
                     System.out.println();
                     break;
 
                 case "103": case "RCQ":
-                    System.out.print("( ? ) Enter customer's queue (1, 2, 3): ");
-                    queueNo = Integer.valueOf(scanner.nextLine()) - 1;
-                    System.out.print("( ? ) Enter row (1, 2, 3, 4, 5): ");
-                    int row = Integer.valueOf(scanner.nextLine()) - 1;
-                    removeCustomer(queue, queueNo, row);
+                    try {
+                        System.out.print("( ? ) Enter customer's queue (1, 2, 3): ");
+                        queueNo = Integer.valueOf(scanner.nextLine()) - 1;
+                        System.out.print("( ? ) Enter row (1, 2, 3, 4, 5): ");
+                        int row = Integer.valueOf(scanner.nextLine()) - 1;
+                        removeCustomer(queue, queueNo, row);
+                    
+                    } catch (NumberFormatException e) {
+                        System.out.println("( ! ) Error! Input not an Integer! Number input required!");
+                    } 
+                    
                     System.out.println();
                     break;
                 
                 case "104": case "PCQ":
-                    System.out.print("( ? ) Enter queue: ");
-                    queueNo = Integer.valueOf(scanner.nextLine()) - 1;
-                    burgerStock = removeServedCustomer(queue, burgerStock, queueNo);
+                    try {
+                        System.out.print("( ? ) Enter queue: ");
+                        queueNo = Integer.valueOf(scanner.nextLine()) - 1;
+                        burgerStock = removeServedCustomer(queue, burgerStock, queueNo);
+                
+                    } catch (NumberFormatException e) {
+                        System.out.println("( ! ) Error! Input not an Integer! Number input required!");
+                    }
+                    
                     System.out.println();
                     break;
                 
@@ -85,9 +102,15 @@ public class Main {
                     break;
 
                 case "109": case "AFS":
-                    System.out.print("( ? ) Enter amount to be added: ");
-                    burgerStock += Integer.valueOf(scanner.nextLine());
-                    System.out.println("( $ ) Successfully added to stock!");
+                    try {
+                        System.out.print("( ? ) Enter amount to be added: ");
+                        burgerStock += Integer.valueOf(scanner.nextLine());
+                        System.out.println("( $ ) Successfully added to stock!");
+                    
+                    } catch (NumberFormatException e) {
+                        System.out.println("( ! ) Error! Input not an Integer! Number input required!");
+                    }
+                    
                     System.out.println();
                     break;
 
