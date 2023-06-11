@@ -12,75 +12,122 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         int burgerStock = 0;
         int queueNo = 0;
-        String[][] queue = {{"", ""}, {"", "", ""}, {"", "", "", "", ""}};
+        String[][] queue = {{"_", "_"}, {"_", "_", "_"}, {"_", "_", "_", "_", "_"}};
+        
+        System.out.println();
+        printMenu();
+        System.out.println();
 
         while (true) {
             if (burgerStock == 10) {
-                System.out.println("Warning! Burger Stock Low!");
+                System.out.println("( ! ) Warning! Burger Stock Low!");
                 System.out.println();
             }
-            System.out.print("Enter command: ");
+            System.out.print("( > ) Enter command: ");
             String command = scanner.nextLine().trim().toUpperCase();
+            System.out.println();
 
             switch (command) {
                 case "100": case "VFQ":
                     printQueue(queue);
+                    System.out.println();
                     break;
 
                 case "101": case "VEQ":
                     printEmptyQueue(queue);
+                    System.out.println();
                     break;
 
                 case "102": case "ACQ":
-                    System.out.print("Enter customer name: ");
+                    System.out.print("( ? ) Enter customer name: ");
                     String customerName = scanner.nextLine().strip();
-                    System.out.print("Enter queue (1, 2, 3) : ");
+                    System.out.print("( ? ) Enter queue (1, 2, 3) : ");
                     queueNo = Integer.valueOf(scanner.nextLine()) - 1;
 
                     addToQueue(queue, customerName, queueNo);
+                    System.out.println();
                     break;
 
                 case "103": case "RCQ":
-                    System.out.print("Enter customer's queue (1, 2, 3): ");
+                    System.out.print("( ? ) Enter customer's queue (1, 2, 3): ");
                     queueNo = Integer.valueOf(scanner.nextLine()) - 1;
-                    System.out.print("Enter row (1, 2, 3, 4, 5): ");
+                    System.out.print("( ? ) Enter row (1, 2, 3, 4, 5): ");
                     int row = Integer.valueOf(scanner.nextLine()) - 1;
                     removeCustomer(queue, queueNo, row);
+                    System.out.println();
                     break;
                 
                 case "104": case "PCQ":
-                    System.out.print("Enter queue: ");
+                    System.out.print("( ? ) Enter queue: ");
                     queueNo = Integer.valueOf(scanner.nextLine()) - 1;
                     burgerStock = removeServedCustomer(queue, burgerStock, queueNo);
+                    System.out.println();
                     break;
                 
                 case "105": case "VCS":
                     sortCustomers(queue);
+                    System.out.println();
                     break;
 
                 case "106": case "SPD":
                     writeToFile(queue, burgerStock);
+                    System.out.println();
                     break;
 
                 case "107": case "LPD":
                     burgerStock = readFromFile(queue);
+                    System.out.println();
                     break;
 
                 case "108": case "STK":
-                    System.out.println("Remaining Stock: " + burgerStock);
+                    System.out.println("( $ ) Remaining Stock: " + burgerStock);
+                    System.out.println();
                     break;
 
                 case "109": case "AFS":
-                    System.out.print("Amount to be added: ");
+                    System.out.print("( ? ) Enter amount to be added: ");
                     burgerStock += Integer.valueOf(scanner.nextLine());
+                    System.out.println("( $ ) Successfully added to stock!");
+                    System.out.println();
+                    break;
+
+                case "111": case "PMN":
+                    printMenu();
+                    System.out.println();
                     break;
 
                 case "999": case "EXT":
                     System.out.println("Exiting...");
+                    scanner.close();
+                    System.out.println();
                     return;
+
+                default: 
+                    System.out.println("( ! ) Error! No such command found!");
+                    System.out.println();
             }
         }
 
+    }
+
+    public static void printMenu() {
+        System.out.println("    Foodie Fave Customer Management System");
+        System.out.println();
+        System.out.println("                Version 0.1.0");
+        System.out.println("        _______________________________");
+        System.out.println();
+        System.out.println("    100 or VFQ -- View all queues");
+        System.out.println("    101 or VEQ -- View all empty queues");
+        System.out.println("    102 or ACQ -- Add customer to queue");
+        System.out.println("    103 or RCQ -- Remove a customer from queue");
+        System.out.println("    104 or PCQ -- Remove a served customer");
+        System.out.println("    105 or VCS -- View customers alphabetically");
+        System.out.println("    106 or SPD -- Store program data in file");
+        System.out.println("    107 or LPD -- Load program data from file");
+        System.out.println("    108 or STK -- View remaining burger stock");
+        System.out.println("    109 or AFS -- Add burgers to stock");
+        System.out.println("    111 or PMN -- Print this menu");
+        System.out.println("    999 or EXT -- Exit the program");
     }
 
     public static void printQueue(String[][] queue) {
@@ -105,7 +152,7 @@ public class Main {
             }
 
             if (index < queue[cashier].length) {
-                if (queue[cashier][index].equals("")) {
+                if (queue[cashier][index].equals("_")) {
                     System.out.print("X");
                 
                 } else {
@@ -149,7 +196,7 @@ public class Main {
             }
 
             if (cashier == 0 && firstQueueEmpty && index < 2) {
-                if (arr[0][index] == "") {
+                if (arr[0][index] == "_") {
                     System.out.print("X");
                 
                 } else {
@@ -161,7 +208,7 @@ public class Main {
             }
 
             if (cashier == 1 && secondQueueEmpty && index < 3) {
-                if (arr[1][index] == "") {
+                if (arr[1][index] == "_") {
                     System.out.print("X");
                 
                 } else {
@@ -173,7 +220,7 @@ public class Main {
             }
 
             if (cashier == 2 && thirdQueueEmpty && index < 5) {
-                if (arr[2][index] == "") {
+                if (arr[2][index] == "_") {
                     System.out.print("X");
                 
                 } else {
@@ -194,28 +241,27 @@ public class Main {
     public static void addToQueue(String[][] arr, String customerName, int queueNo) {
         if (queueNo == 0 || queueNo == 1 || queueNo == 2) {
             if (!hasEmptySpots(arr[queueNo])) {
-                System.out.println("Error! No empty slots in queue!");
-                System.out.println();
+                System.out.println("( ! ) Error! No empty slots in queue!");
             
             } else {
                 for (int i = 0; i < arr[queueNo].length; i++) {
-                    if (arr[queueNo][i] == "") {
+                    if (arr[queueNo][i] == "_") {
                         arr[queueNo][i] = customerName;
+                        System.out.println("( $ ) Successfully added to queue!");
                         return;
                     }
                 }
             }
         
         } else {
-            System.out.println("Error! No such queue found!");
-            System.out.println();
+            System.out.println("( ! ) Error! No such queue found!");
         }
         
     }
 
     public static boolean hasEmptySpots(String[] arr) {
         for (String i : arr) {
-            if (i == "") {
+            if (i == "_") {
                 return true;
             }
         }
@@ -226,34 +272,35 @@ public class Main {
     public static void removeCustomer(String[][] arr, int queueNo, int row) {
         if (queueNo == 0 || queueNo == 1 || queueNo == 2) {
             if (row < arr[queueNo].length) {
-                if (arr[queueNo][row] != "") {
-                    arr[queueNo][row] = "";
+                if (arr[queueNo][row] != "_") {
+                    arr[queueNo][row] = "_";
                 
                 } else {
-                    System.out.println("Error! No customer in position!");
+                    System.out.println("( ! ) Error! No customer in position!");
                     return;
                 }
             
             } else {
-                System.out.println("Error! No such row found!");
+                System.out.println("( ! ) Error! No such row found!");
                 return;
             }
         
         } else {
-            System.out.println("Error! No such queue found!");
+            System.out.println("( ! ) Error! No such queue found!");
             return;
         }
 
         moveForward(arr);
+        System.out.println("( $ ) Successfully removed from queue!");
     }
 
     public static void moveForward(String[][] arr) {
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr[i].length; j++) {
                 if (j != arr[i].length - 1) {
-                    if (arr[i][j + 1] != "" && arr[i][j] == "") {
+                    if (arr[i][j + 1] != "_" && arr[i][j] == "_") {
                         arr[i][j] = arr[i][j + 1];
-                        arr[i][j + 1] = "";
+                        arr[i][j + 1] = "_";
                     }
                 }
             }
@@ -262,17 +309,18 @@ public class Main {
 
     public static int removeServedCustomer(String[][] arr, int burgerStock, int queueNo) {
         if (queueNo == 0 || queueNo == 1 || queueNo == 2) {
-            if (arr[queueNo][0] != 0) {
-                arr[queueNo][0] = "";
+            if (arr[queueNo][0] != "_") {
+                arr[queueNo][0] = "_";
                 moveForward(arr);
+                System.out.println("( $ ) Successfully served customer!");
                 return burgerStock -= 5;
             } else {
-                System.out.println("Error! No customers in queue!");
+                System.out.println("( ! ) Error! No customers in queue!");
                 return burgerStock;
             }
 
         } else {
-            System.out.println("Error! No such queue Found!");
+            System.out.println("( ! ) Error! No such queue Found!");
             return burgerStock;
         }
     }
@@ -282,7 +330,7 @@ public class Main {
 
         for (String[] i : arr) {
             for (String j : i) {
-                if (j != "") {
+                if (j != "_") {
                     numberOfCustomers++;
                 
                 }
@@ -295,7 +343,7 @@ public class Main {
 
         for (String[] i : arr) {
             for (String j : i) {
-                if (j != "") {
+                if (j != "_") {
                     customerArr[arrIndex] = j;
                     arrIndex++;
                 }
@@ -313,19 +361,19 @@ public class Main {
             }
         }
 
-        System.out.println("All customers in alphabetical order: ");
+        System.out.println("( $ ) Displaying all customers in alphabetical order: ");
+        System.out.println();
         for (String i : customerArr) {
-            System.out.println(i);
+            if (!i.equals("_")) {
+                System.out.println("    " + i);
+            }
         }
     }
 
     public static void writeToFile(String[][] arr, int burgerStock) {
         try {
             File file = new File("data.txt");
-
             FileWriter writer = new FileWriter(file);
-
-            System.out.println(burgerStock);
 
             writer.write(burgerStock + ",\n");
 
@@ -339,10 +387,10 @@ public class Main {
 
             writer.close();
 
-            System.out.println("Successfully written to file");
+            System.out.println("( $ ) Session saved to file!");
         
         } catch (IOException e) {
-            System.out.println("An error Occured: ");
+            System.out.println("( !!! ) Fatal error occured: ");
             e.printStackTrace();
         }
     }
@@ -364,10 +412,12 @@ public class Main {
             fileScan.close();
         
         } catch (FileNotFoundException e) {
-            System.out.println("Error! File not found!");
-            e.printStackTrace();
+            System.out.println("( ! ) Error! Saved data not found! Please save first!");
+            return stock;
+
         }
 
+        System.out.println("( $ ) Session restored from file!");
         return stock;
     }
 }
