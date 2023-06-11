@@ -55,7 +55,7 @@ public class Main {
                         System.out.print("( ? ) Enter queue (1, 2, 3) : ");
                         queueNo = Integer.valueOf(scanner.nextLine()) - 1;
                         addToQueue(queue, customerName, queueNo);
-                    
+
                     // Catch wrong input types
                     } catch (NumberFormatException e) {
                         System.out.println("( ! ) Error! Input not an Integer! Number input required!");
@@ -72,81 +72,81 @@ public class Main {
                         System.out.print("( ? ) Enter row (1, 2, 3, 4, 5): ");
                         int row = Integer.valueOf(scanner.nextLine()) - 1;
                         removeCustomer(queue, queueNo, row);
-                    
+
                     } catch (NumberFormatException e) {
                         System.out.println("( ! ) Error! Input not an Integer! Number input required!");
-                    } 
-                    
+                    }
+
                     System.out.println();
                     break;
-                
+
                 // Remove served customer
                 case "104": case "PCQ":
                     try {
                         System.out.print("( ? ) Enter queue: ");
                         queueNo = Integer.valueOf(scanner.nextLine()) - 1;
                         burgerStock = removeServedCustomer(queue, burgerStock, queueNo);
-                
+
                     } catch (NumberFormatException e) {
                         System.out.println("( ! ) Error! Input not an Integer! Number input required!");
                     }
-                    
+
                     System.out.println();
                     break;
-                
+
                 // Sort and display customers
                 case "105": case "VCS":
                     sortCustomers(queue);
                     System.out.println();
                     break;
-                
+
                 // Write to file
                 case "106": case "SPD":
                     writeToFile(queue, burgerStock);
                     System.out.println();
                     break;
-                
+
                 // Read from file
                 case "107": case "LPD":
                     burgerStock = readFromFile(queue);
                     System.out.println();
                     break;
-                
+
                 // Display burger stock
                 case "108": case "STK":
                     System.out.println("( $ ) Remaining Stock: " + burgerStock);
                     System.out.println();
                     break;
-                
+
                 // Add burger stock
                 case "109": case "AFS":
                     try {
                         System.out.print("( ? ) Enter amount to be added: ");
                         burgerStock += Integer.valueOf(scanner.nextLine());
                         System.out.println("( $ ) Successfully added to stock!");
-                    
+
                     } catch (NumberFormatException e) {
                         System.out.println("( ! ) Error! Input not an Integer! Number input required!");
                     }
-                    
+
                     System.out.println();
                     break;
-                
+
                 // Print main menu
                 case "111": case "PMN":
                     printMenu();
                     System.out.println();
                     break;
-                
+
                 // Program quit
                 case "999": case "EXT":
                     System.out.println("Exiting...");
                     scanner.close();
                     System.out.println();
                     return;
-                
+
                 // Catch any other command
-                default: 
+                default:
                     System.out.println("( ! ) Error! No such command found!");
                     System.out.println();
             }
@@ -400,8 +400,7 @@ public class Main {
         
         } catch (IOException e) {
             System.out.println("( !!! ) Fatal error occured: ");
-            e.printStackTrace();
-            return;
+            System.out.println(e.getMessage());
         }
     }
 
@@ -426,6 +425,11 @@ public class Main {
             System.out.println("( ! ) Error! Saved data not found! Please save first!");
             return stock;
 
+        } catch (NumberFormatException e) {
+            System.out.println("( ! ) Error! Unable to read burger stock! Possibly corrupted file!");
+            System.out.println();
+            System.out.println("( ! ) Error! Unable to read some values! File read failed!");
+            return stock;
         }
 
         System.out.println("( $ ) Session restored from file!");
