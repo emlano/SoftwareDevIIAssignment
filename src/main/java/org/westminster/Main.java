@@ -123,7 +123,7 @@ public class Main {
                     try {
                         System.out.print("( ? ) Enter amount to be added: ");
                         int addtoBurgerStock = Integer.valueOf(scanner.nextLine());
-
+                        // Check if burger stocks exceeds limit with addition
                         if (addtoBurgerStock + burgerStock <= 50) {
                             burgerStock += addtoBurgerStock;
                             System.out.println("( $ ) Successfully added to stock!");
