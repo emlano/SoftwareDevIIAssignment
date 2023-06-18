@@ -339,6 +339,7 @@ public class Main {
     public static int removeServedCustomer(String[][] arr, int burgerStock, int queueNo) {
         // Server and remove customer when queue number is given
         // Requires 2d String array type arr and remaining burger number and queue number as Integers
+        // Returns burger stock
         if (queueNo == 0 || queueNo == 1 || queueNo == 2) {
             // To check if burger stock is enough to serve customer
             if (burgerStock >= 5) {
@@ -382,16 +383,7 @@ public class Main {
         }
 
         // Iterate through new array and sort lexicographically (dictionary sort).
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                if (customerArr[i].compareTo(customerArr[j]) < 0) {
-                    String temp = customerArr[i];
-                    customerArr[i] = customerArr[j];
-                    customerArr[j] = temp;
-                
-                }
-            }
-        }
+        customerArr = bubbleSort(customerArr);
 
         System.out.println("( $ ) Displaying all customers in alphabetical order: ");
         System.out.println();
@@ -401,6 +393,58 @@ public class Main {
                 System.out.println("    " + i);
             }
         }
+    }
+
+    public static String[] bubbleSort(String[] arr) {
+        // Sort a String array alphabetically using bubble sort algorithm
+        // Requires String[] as an argument, returns sorted string array
+        int length = arr.length;
+
+        for (int i = 0; i < length; i++) {
+            // Iterate through array, again and again till i == length -1, biggest value always
+            // pushed to the end of the list with each iteration of i.
+            for (int j = 1; j < length - i; j++) {
+                // Compare if one string is lower (comes prior alphabetically) in ascii.
+                if (!compareStrings(arr[j - 1], arr[j])) {
+                    String temp = arr[j - 1];
+                    arr[j - 1] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+
+        return arr;
+    }
+
+    public static boolean compareStrings(String firstString, String secondString) {
+        // Compare each char in string and return if the first string comes prior to second string
+        // Accepts two strings as arguments and returns a boolean (first string comes prior to second string)
+        int biggestLength = (firstString.length() >= secondString.length()) ? firstString.length() : secondString.length();
+
+        int asciiOfFirst = 0;
+        int asciiOfSecond = 0;
+
+        for (int i = 0; i < biggestLength; i++) {
+            // Return true if first string length is smaller than the second string
+            // And strings are similar up till the end of the first string
+            if (i == firstString.length()) {
+                return true; 
+            }
+            
+            if (i == secondString.length()) {
+                return false; 
+            }
+
+            // Get char at index and convert it into an ascii value
+            asciiOfFirst = firstString.charAt(i);
+            asciiOfSecond = secondString.charAt(i);
+
+            if (asciiOfFirst != asciiOfSecond) {
+                break;
+            }
+        }
+
+        return (asciiOfFirst < asciiOfSecond);
     }
 
     public static void writeToFile(String[][] arr, int burgerStock) {
@@ -427,16 +471,16 @@ public class Main {
 
             System.out.println("( $ ) Session saved to file!");
         
-        // Catch exception if cannot open file to write
+        // Catch exception if unable to open file to write
         } catch (IOException e) {
-            System.out.println("( !!! ) Fatal error occured: ");
+            System.out.println("( !!! ) Fatal error occurred: ");
             System.out.println(e.getMessage());
         }
     }
 
     public static int readFromFile(String[][] arr) {
         // Locate "data.txt" and restore session with saved data
-        // Requires String type 2d array as arr
+        // Requires String type 2d array as arr, returns burger stock
         int stock = 0;
         
         try {
