@@ -52,6 +52,17 @@ public class Main {
                     try {
                         System.out.print("( ? ) Enter customer name: ");
                         String customerName = scanner.nextLine().strip();
+
+                        if (customerName.equals("null")) {
+                            System.out.println("( ! ) Error! Illegal string 'null' in input!");
+                            System.out.println();
+                            break;
+                        
+                        } else if (customerName.contains(",")) {
+                            System.out.println("( ! ) Error! Illegal character ',' in input!");
+                            System.out.println();
+                            break;
+                        }
                         System.out.print("( ? ) Enter queue (1, 2, 3) : ");
                         queueNo = Integer.valueOf(scanner.nextLine()) - 1;
                         addToQueue(queue, customerName, queueNo);
