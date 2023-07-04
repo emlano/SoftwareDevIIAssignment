@@ -8,11 +8,17 @@ import java.io.FileWriter;
 import java.io.FileNotFoundException;
 
 public class Main {
+
+    public enum Condition {
+        AllQueues,
+        EmptyQueues
+    }
+
     public static void main(String[] args) {
         // Init vars
         Scanner scanner = new Scanner(System.in);
         int burgerStock = 0;
-        int queueNo = 0;
+        int queueNo;
         String[][] queue = {{"_", "_"}, {"_", "_", "_"}, {"_", "_", "_", "_", "_"}};
         
         // Print menu on program start
@@ -23,7 +29,7 @@ public class Main {
         // Main UI loop
         while (true) {
             // Show warning when stock is low
-            if (burgerStock == 10) {
+            if (burgerStock <= 10) {
                 System.out.println("( ! ) Warning! Burger Stock Low!");
                 System.out.println();
             }
@@ -53,8 +59,18 @@ public class Main {
                         System.out.print("( ? ) Enter customer name: ");
                         String customerName = scanner.nextLine().strip();
 
-                        if (customerName.equals("null")) {
+                        if (customerName.equals("")) {
+                            System.out.println("( ! ) Error! Customer name cannot be empty!");
+                            System.out.println();
+                            break;
+                        
+                        } else if (customerName.equals("null")) {
                             System.out.println("( ! ) Error! Illegal string 'null' in input!");
+                            System.out.println();
+                            break;
+
+                        } else if (customerName.equals("_")) {
+                            System.out.println("( ! ) Error! Illegal string '_' in input!");
                             System.out.println();
                             break;
                         
@@ -119,7 +135,7 @@ public class Main {
 
                 // Read from file
                 case "107": case "LPD":
-                    burgerStock = readFromFile(queue);
+                    burgerStock = readFromFile(queue, burgerStock);
                     System.out.println();
                     break;
 
@@ -133,14 +149,14 @@ public class Main {
                 case "109": case "AFS":
                     try {
                         System.out.print("( ? ) Enter amount to be added: ");
-                        int addtoBurgerStock = Integer.valueOf(scanner.nextLine());
+                        int addToBurgerStock = Integer.valueOf(scanner.nextLine());
                         // Check if burger stocks exceeds limit with addition
-                        if (addtoBurgerStock + burgerStock <= 50) {
-                            burgerStock += addtoBurgerStock;
+                        if ((addToBurgerStock + burgerStock <= 50) && !(addToBurgerStock < 0)) {
+                            burgerStock += addToBurgerStock;
                             System.out.println("( $ ) Successfully added to stock!");
                         
                         } else {
-                            System.out.println("( ! ) Error! Burger count cannot exceed stock limit of 50!");
+                            System.out.println("( ! ) Error! Burger count out of bounds (Limit : 50)!");
                         }
 
                     } catch (NumberFormatException e) {
@@ -202,16 +218,32 @@ public class Main {
         System.out.print("       ");
 
         // Iterate through 2d array and check existence of elements at each index
+        displayQueues(Condition.AllQueues, arr);
+    }
+
+    public static void printEmptyQueue(String[][] arr) {
+        // Print all queues with empty spots, accepts 2d String array containing all queues as arg
+        System.out.println("  *********************");
+        System.out.println("  *   Empty Cashiers  *");
+        System.out.println("  *********************");
+
+        // To indent first line from edge
+        System.out.print("       ");
+        
+        displayQueues(Condition.EmptyQueues, arr);
+    }
+
+    private static void displayQueues(Condition condition, String[][] arr) {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 3; j++) {
-                if (i < arr[j].length) {
+                if (getCondition(condition, arr[j], i)) {
                     if (arr[j][i].equals("_")) {
                         System.out.print("X");
-                    
+
                     } else {
                         System.out.print("O");
                     }
-                
+
                 } else {
                     // To print whitespace if index bigger than queue size
                     // In order to keep columns straight
@@ -230,42 +262,11 @@ public class Main {
         System.out.println("O - Occupied    X - Not Occupied");
     }
 
-    public static void printEmptyQueue(String[][] arr) {
-        // Print all queues with empty spots, accepts 2d String array containing all queues as arg
-        System.out.println("  *********************");
-        System.out.println("  *   Empty Cashiers  *");
-        System.out.println("  *********************");
-
-        // To indent first line from edge
-        System.out.print("       ");
-        
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 3; j++) {
-                // To check is each queue has empty slots
-                if (i < arr[j].length && hasEmptySpots(arr[j])) {
-                    // To check if a customer found at index
-                    if (arr[j][i].equals("_")) {
-                        System.out.print("X");
-                    
-                    } else {
-                        System.out.print("O");
-                    }
-                
-                } else {
-                    // To print whitespace if either queue has less elements than "i"
-                    // elements or queue has no empty spaces
-                    System.out.print(" ");
-                }
-                // To print whitespace separater between queues
-                System.out.print("    ");
-            }
-            // Line breaker and initial line indenter
-            System.out.println();
-            System.out.print("       ");
+    private static boolean getCondition(Condition condition, String[] arr, int i) {
+        if (condition == Condition.AllQueues) {
+            return (arr.length > i);
         }
-        // Print footer
-        System.out.println();
-        System.out.println("O - Occupied    X - Not Occupied");
+        return (arr.length > i && hasEmptySpots(arr));
     }
 
     public static void addToQueue(String[][] arr, String customerName, int queueNo) {
@@ -292,7 +293,7 @@ public class Main {
         }
     }
 
-    public static boolean hasEmptySpots(String[] arr) {
+    private static boolean hasEmptySpots(String[] arr) {
         // Check if queue is full and return boolean, requires 2d array of queues
         for (String i : arr) {
             if (i.equals("_")) {
@@ -332,7 +333,7 @@ public class Main {
         System.out.println("( $ ) Successfully removed from queue!");
     }
 
-    public static void moveForward(String[][] arr) {
+    private static void moveForward(String[][] arr) {
         // To move customers up in case an empty space opens in the middle of a queue
         // Accepts 2d array of queues
         for (int i = 0; i < arr.length; i++) {
@@ -357,10 +358,10 @@ public class Main {
                 // Always serve and remove the first customer in queue
                 if (!arr[queueNo][0].equals("_")) {
                     arr[queueNo][0] = "_";
-                    // Move next in line Customer, up once
+                    // Shift queue once to left
                     moveForward(arr);
                     System.out.println("( $ ) Successfully served customer!");
-                    return burgerStock -= 5;
+                    return (burgerStock -= 5);
                 
                 } else {
                     System.out.println("( ! ) Error! No customers in queue!");
@@ -394,7 +395,7 @@ public class Main {
         }
 
         // Iterate through new array and sort lexicographically (dictionary sort).
-        customerArr = bubbleSort(customerArr);
+        bubbleSort(customerArr);
 
         System.out.println("( $ ) Displaying all customers in alphabetical order: ");
         System.out.println();
@@ -406,7 +407,7 @@ public class Main {
         }
     }
 
-    public static String[] bubbleSort(String[] arr) {
+    private static void bubbleSort(String[] arr) {
         // Sort a String array alphabetically using bubble sort algorithm
         // Requires String[] as an argument, returns sorted string array
         int length = arr.length;
@@ -423,14 +424,12 @@ public class Main {
                 }
             }
         }
-
-        return arr;
     }
 
-    public static boolean compareStrings(String firstString, String secondString) {
+    private static boolean compareStrings(String firstString, String secondString) {
         // Compare each char in string and return if the first string comes prior to second string
         // Accepts two strings as arguments and returns a boolean (first string comes prior to second string)
-        int biggestLength = (firstString.length() >= secondString.length()) ? firstString.length() : secondString.length();
+        int biggestLength = Math.max(firstString.length(), secondString.length());
 
         int asciiOfFirst = 0;
         int asciiOfSecond = 0;
@@ -489,12 +488,15 @@ public class Main {
         }
     }
 
-    public static int readFromFile(String[][] arr) {
+    public static int readFromFile(String[][] arr, int stock) {
         // Locate "data.txt" and restore session with saved data
         // Requires String type 2d array as arr, returns burger stock
-        int stock = 0;
-        
-        try {
+            if (stock != 0 || !arr[0][0].equals("_") || !arr[1][0].equals("_") || !arr[2][0].equals("_")) {
+                System.out.println("( ! ) Error! Program is storing data! File read stopped to prevent data loss!");
+                return stock;
+            }
+
+            try {
             File file = new File("data.txt");
             Scanner fileScan = new Scanner(file);
             
@@ -513,9 +515,10 @@ public class Main {
             System.out.println("( ! ) Error! Saved data not found! Please save first!");
             return stock;
 
-        // Catch if burgerstock string cannot be converted to integer
-        } catch (NumberFormatException e) {
-            System.out.println("( ! ) Error! Unable to read burger stock! Possibly corrupted file!");
+        // Catch if burger stock string cannot be converted to integer
+        // or if file attempt to store data out of array
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
+            System.out.println("( ! ) Error! Unable to read some values! Possibly corrupted file!");
             return stock;
         }
 
