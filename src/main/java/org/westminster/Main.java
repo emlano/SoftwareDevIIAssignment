@@ -94,9 +94,9 @@ public class Main {
                 // Remove customer
                 case "103": case "RCQ":
                     try {
-                        System.out.print("( ? ) Enter customer's queue: ");
+                        System.out.print("( ? ) Enter customers' queue: ");
                         queueNo = Integer.valueOf(scanner.nextLine()) - 1;
-                        System.out.print("( ? ) Enter row: ");
+                        System.out.print("( ? ) Enter customers' row: ");
                         int row = Integer.valueOf(scanner.nextLine()) - 1;
                         removeCustomer(queue, queueNo, row);
 
